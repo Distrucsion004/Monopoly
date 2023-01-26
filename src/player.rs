@@ -1,4 +1,4 @@
-use crate::data::{Railroad, t, Utility, Prop};
+use crate::data::{Space};
 
 pub fn initialize_player() -> Player{
     let mut p = Player{
@@ -31,32 +31,22 @@ impl Player{
         self.boardposition = self.boardposition + x as i32;
     }
 
-    pub fn add_railroad(&mut self, r : String) -> (){
-        self.railroads.push(r);
+    pub fn add_railroad(&mut self, r : &Space) -> (){
+        self.railroads.push(r.name.to_string());
         
     }
-    pub fn add_utility(&mut self, r : String) -> (){
-        self.utilities.push(r);
+    pub fn add_utility(&mut self, r : &Space) -> (){
+        self.utilities.push(r.name.to_string());
     }
-    pub fn add_prop(&mut self, r : String) -> (){
-        self.props.push(r);
+    pub fn add_prop(&mut self, r : &Space) -> (){
+        self.props.push(r.name.to_string());
     }
     
 
     
 }
-pub fn update_railroads(mut h : &mut Railroad,) -> (){
+pub fn update_ownership(mut h : &mut Space,) -> (){
     if h.owned == false{
         h.owned = true;}
-    else {h.owned = false;}
-}
-pub fn update_utilities(mut h : &mut Utility,) -> (){
-    if h.owned == false{
-    h.owned = true;}
-    else {h.owned = false;}
-}
-pub fn update_props(mut h : &mut Prop) -> (){
-    if h.owned == false{
-    h.owned = true;}
     else {h.owned = false;}
 }
