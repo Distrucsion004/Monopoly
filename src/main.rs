@@ -30,7 +30,7 @@ fn main() {
     };
 
     //debugging code 
-   /* 
+   /*
     let mut player = player::initialize_player();
     player.add_money(10);
     println!("{}", player.money);
@@ -38,9 +38,12 @@ fn main() {
     println!("{}", player.money);
     player.dice_move(5);
     println!("{}", player.boardposition);
-    player.add_railroad(&spaces[5]);
-    update_ownership(&mut spaces[5]);
+    
+    
     println!("{:?}", player.railroads);
+    println!("{}", spaces[5].owned);
+    player.buy_prop(&mut spaces[5]);
+    println!("{:?}", player );
     println!("{}", spaces[5].owned);
     */
 

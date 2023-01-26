@@ -106,7 +106,7 @@ pub struct Space{
     pub name : String,
     pub kind :  space_type,
     pub class : PropTypes,
-    pub price : u32,
+    pub price : i32,
     pub houses : u8,
     pub hotel : bool,
     pub boardposition : i32,

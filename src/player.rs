@@ -41,6 +41,11 @@ impl Player{
     pub fn add_prop(&mut self, r : &Space) -> (){
         self.props.push(r.name.to_string());
     }
+    pub fn buy_prop(&mut self, mut r: &mut Space)->(){
+        self.add_prop(&r);
+        update_ownership(r);
+        self.take_money(r.price);
+    }
     
 
     
@@ -50,3 +55,4 @@ pub fn update_ownership(mut h : &mut Space,) -> (){
         h.owned = true;}
     else {h.owned = false;}
 }
+
