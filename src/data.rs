@@ -15,7 +15,6 @@ pub fn props() -> ([&'static str;40],HashMap<String, String>, [Prop;22], [Railro
                                 "Go to Jail", "Pacific Avenue", "North Carolina Avenue",
                                 "Chest", "Pennsylvania Avenue", "Short Line",
                                 "Chance", "Park Place", "Luxury Tax", "BoardWalk"];
-    
     let mut props :[Prop;22]  = [Prop{name : board[1].to_string(),  class : PropTypes::Cherry,   price : 60,  houses : 0, hotel : false, boardposition :1 , owned : false },
                                  Prop{name : board[3].to_string(),  class : PropTypes::Cherry,   price : 60,  houses : 0, hotel : false, boardposition :3 , owned : false},
                                  Prop{name : board[6].to_string(),  class : PropTypes::Cyan,     price : 100, houses : 0, hotel : false, boardposition :6 , owned : false},
