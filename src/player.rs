@@ -10,6 +10,7 @@ pub fn initialize_player() -> Player{
     };
     return p
 }
+#[derive(Debug)]
 pub struct Player{
     pub money: i32,
     pub boardposition: i32,
@@ -47,15 +48,15 @@ impl Player{
 pub fn update_railroads(mut h : &mut Railroad,) -> (){
     if h.owned == false{
         h.owned = true;}
-    else {h.owned == false;}
+    else {h.owned = false;}
 }
 pub fn update_utilities(mut h : &mut Utility,) -> (){
     if h.owned == false{
     h.owned = true;}
-    else {h.owned == false;}
+    else {h.owned = false;}
 }
 pub fn update_props(mut h : &mut Prop) -> (){
     if h.owned == false{
     h.owned = true;}
-    else {h.owned == false;}
+    else {h.owned = false;}
 }
