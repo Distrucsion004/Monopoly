@@ -1,4 +1,4 @@
-use crate::data::{Space};
+use crate::data::{Space, space_type};
 
 pub fn initialize_player() -> Player{
     let mut p = Player{
@@ -6,7 +6,8 @@ pub fn initialize_player() -> Player{
         boardposition :0,
         railroads : Vec::new(),
         utilities : Vec::new(),
-        props : Vec::new()
+        props : Vec::new(),
+        in_jail : false
     };
     return p
 }
@@ -16,24 +17,31 @@ pub struct Player{
     pub boardposition: i32,
     pub railroads: Vec<String>,
     pub utilities: Vec<String>,
-    pub props: Vec<String>
+    pub props: Vec<String>,
+    pub in_jail: bool,
 }
 
 impl Player{
+    
     pub fn take_money(&mut self, x : i32) -> (){
         self.money = self.money - x;
     }
     pub fn add_money(&mut self, x : i32) -> (){
         self.money = self.money + x;
     }
-
     pub fn dice_move(&mut self, x : i8) -> (){
-        self.boardposition = self.boardposition + x as i32;
+        
+        let mut y = self.boardposition + x as i32;
+        if y <= 39{
+            self.boardposition = y;
+        }
+        else {
+            self.boardposition = y -40;
+        }
+        
     }
-
     pub fn add_railroad(&mut self, r : &Space) -> (){
         self.railroads.push(r.name.to_string());
-        
     }
     pub fn add_utility(&mut self, r : &Space) -> (){
         self.utilities.push(r.name.to_string());
@@ -42,9 +50,31 @@ impl Player{
         self.props.push(r.name.to_string());
     }
     pub fn buy_prop(&mut self, mut r: &mut Space)->(){
-        self.add_prop(&r);
+        if r.price <= self.money{
+        match r.kind{
+        space_type::Prop =>self.add_prop(&r),
+        space_type::Railroad => self.add_railroad(&r),
+        space_type::Utility => self.add_utility(&r),
+        _ => panic!("Error")
+        }
         update_ownership(r);
         self.take_money(r.price);
+        }
+        else {println!{"Not enough money!"};}
+    }
+    pub fn go_to_jail(&mut self) ->(){
+        self.in_jail = true 
+    }
+    pub fn leave_jail(&mut self) ->(){
+        self.in_jail = false 
+    }
+    pub fn check_balance(&self) ->(){
+        println!("{}", self.money);
+    }
+    pub fn check_props(&self) ->(){
+        println!("{:?}", self.props);
+        println!("{:?}", self.railroads);
+        println!("{:?}", self.utilities);
     }
     
 
