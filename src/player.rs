@@ -12,6 +12,7 @@ pub fn initialize_player() -> Player{
     return p
 }
 #[derive(Debug)]
+#[derive(Clone)]
 pub struct Player{
     pub money: i32,
     pub boardposition: i32,

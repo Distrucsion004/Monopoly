@@ -13,6 +13,7 @@ fn main() {
     let count = player_count.parse::<i32>().unwrap();
     println!("{}", count);
     let mut playe_r:Vec<Player> = Vec::new();
+    let mut back:Vec<Player> = Vec::new();
     for player in 0..count{
         playe_r.push(initialize_player());
     }
@@ -25,7 +26,7 @@ fn main() {
     };
     println!("Enter \"help\" for a list of commands");
     loop{
-    for mut i in playe_r{
+    for mut i in 0..count{
     loop{
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
@@ -34,27 +35,30 @@ fn main() {
             "help" => list_commands(),
             "roll" => {dice.roll();
                 println!("{}, {}", &dice.d1, &dice.d2);},
-            "move" => { i.dice_move(dice.total());
-                        println!("You landed on {}",spaces[i.boardposition as usize].name)},
-            "check"=> {println!("{}",spaces[i.boardposition as usize].name)},
-            "buy" =>  {if ( spaces[i.boardposition as usize].kind == space_type::Prop ||
-                            spaces[i.boardposition as usize].kind == space_type::Utility ||
-                            spaces[i.boardposition as usize].kind == space_type::Railroad) && 
-                            spaces[i.boardposition as usize].owned == false{
-                        i.buy_prop(&mut spaces[i.boardposition as usize]);
+            "move" => { playe_r[i as usize].dice_move(dice.total());
+                        println!("You landed on {}",spaces[playe_r[i as usize].boardposition as usize].name)},
+            "check"=> {println!("{}",spaces[playe_r[i as usize].boardposition as usize].name)},
+            "buy" =>  {if ( spaces[playe_r[i as usize].boardposition as usize].kind == space_type::Prop ||
+                            spaces[playe_r[i as usize].boardposition as usize].kind == space_type::Utility ||
+                            spaces[playe_r[i as usize].boardposition as usize].kind == space_type::Railroad) && 
+                            spaces[playe_r[i as usize].boardposition as usize].owned == false{
+                                let k = &mut spaces[playe_r[i as usize].boardposition as usize];
+                                playe_r[i as usize].buy_prop(k);
                         }
-                        else if spaces[i.boardposition as usize].owned == true{
+                        else if spaces[playe_r[i as usize].boardposition as usize].owned == true{
                             println!("Space is already owned!");
                         }
                         else{println!("Not a buyable field");}
                }
-            "owned" => {println!("props = {:?},\n railroads = {:?},\n utilities = {:?}\n", i.props, i.railroads, i.utilities);}
+            "owned" => {println!("props = {:?},\n railroads = {:?},\n utilities = {:?}\n", playe_r[i as usize].props, playe_r[i as usize].railroads, playe_r[i as usize].utilities);}
             "end_turn" => {break},
             
             _ => (),
 
         }
+        
     }
+    
 }
 }
     /*
