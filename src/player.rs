@@ -1,7 +1,10 @@
+use std::os::windows::prelude::MetadataExt;
+
 use crate::data::{Space, space_type};
 
-pub fn initialize_player() -> Player{
-    let mut p = Player{
+pub fn initialize_player(na : i8) -> Player{
+    let p = Player{
+        number: na,
         money : 1500,
         boardposition :0,
         railroads : Vec::new(),
@@ -14,6 +17,7 @@ pub fn initialize_player() -> Player{
 #[derive(Debug)]
 #[derive(Clone)]
 pub struct Player{
+    pub number : i8,
     pub money: i32,
     pub boardposition: i32,
     pub railroads: Vec<String>,
@@ -32,7 +36,7 @@ impl Player{
     }
     pub fn dice_move(&mut self, x : i8) -> (){
         
-        let mut y = self.boardposition + x as i32;
+        let y = self.boardposition + x as i32;
         if y <= 39{
             self.boardposition = y;
         }
@@ -58,7 +62,7 @@ impl Player{
         space_type::Utility => self.add_utility(&r),
         _ => panic!("Error")
         }
-        update_ownership(r);
+        self.update_ownership(r);
         self.take_money(r.price);
         }
         else {println!{"Not enough money!"};}
@@ -75,15 +79,17 @@ impl Player{
     pub fn check_props(&self) ->(){
         println!("{:?}", self.props);
         println!("{:?}", self.railroads);
-        println!("{:?}", self.utilities);
+        println!("{:?}", self.utilities);}
+    pub fn update_ownership(&self, mut h : &mut Space,) -> (){
+        if h.owned == false{
+            h.owned = true;
+            h.owner = self.number}
+        else {h.owned = false;}
     }
     
+    
+    }
 
     
-}
-pub fn update_ownership(mut h : &mut Space,) -> (){
-    if h.owned == false{
-        h.owned = true;}
-    else {h.owned = false;}
-}
+
 
