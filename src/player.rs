@@ -1,6 +1,4 @@
-use std::os::windows::prelude::MetadataExt;
-
-use crate::data::{Space, space_type};
+use crate::data::{Space, SpaceType};
 
 pub fn initialize_player(na : i8) -> Player{
     let p = Player{
@@ -54,12 +52,12 @@ impl Player{
     pub fn add_prop(&mut self, r : &Space) -> (){
         self.props.push(r.name.to_string());
     }
-    pub fn buy_prop(&mut self, mut r: &mut Space)->(){
+    pub fn buy_prop(&mut self,  r: &mut Space)->(){
         if r.price <= self.money{
         match r.kind{
-        space_type::Prop =>self.add_prop(&r),
-        space_type::Railroad => self.add_railroad(&r),
-        space_type::Utility => self.add_utility(&r),
+        SpaceType::Prop =>self.add_prop(&r),
+        SpaceType::Railroad => self.add_railroad(&r),
+        SpaceType::Utility => self.add_utility(&r),
         _ => panic!("Error")
         }
         self.update_ownership(r);
