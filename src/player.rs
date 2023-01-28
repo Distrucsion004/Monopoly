@@ -41,6 +41,10 @@ impl Player{
         }
         else {
             self.boardposition = y -40;
+            self.add_money(200);
+            if self.boardposition != 0{
+            println!("You passed by Go\n200 $ have been added to your wallet")
+            }
         }
         
     }
@@ -93,7 +97,7 @@ impl Player{
                 for l in 0..40{
                     if x[l].name == self.props[k].to_string() && &x[l].class == col{
                         valid = valid+1;
-                        println!("{}", valid);
+                        
                     }
                 }
             

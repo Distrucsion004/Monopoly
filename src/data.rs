@@ -17,6 +17,7 @@ pub fn props() -> ([&'static str; 40],[Space;40])   {
                                 "Go to Jail", "Pacific Avenue", "North Carolina Avenue",
                                 "Chest", "Pennsylvania Avenue", "Short Line",
                                 "Chance", "Park Place", "Luxury Tax", "BoardWalk"];
+
     let  spaces :[Space;40] = [ Space{name : board[0].to_string(),  class: PropTypes::None,      price: 0,    houses : 0, hotel : false, boardposition : 0 ,owned : false, mortgage : false, owner : 0,kind: SpaceType::Special,  rent: Rent { basic:0,  house1: 0 , house2: 0 , house3: 0 , house4: 0 , hotel: 0 , mortgage: 0           }, housep : 0},
                                 Space{name : board[1].to_string(),  class : PropTypes::Cherry,   price :60,   houses : 0, hotel : false, boardposition :1 , owned : false, mortgage : false, owner : 0,kind: SpaceType::Prop,     rent: Rent { basic:2 , house1: 10, house2: 30, house3: 90, house4: 160, hotel: 250, mortgage:30         }, housep : 50},
                                 Space{name: "Chest" .to_string(),   class: PropTypes::None,      price: 0,    houses : 0, hotel : false, boardposition :2 ,owned : false , mortgage : false, owner : 0,kind: SpaceType::Chest,    rent: Rent { basic:0 , house1: 0 , house2: 0 , house3: 0 , house4: 0 , hotel: 0 , mortgage: 0           }, housep : 0},
@@ -132,10 +133,10 @@ pub struct Dice{
 impl Dice{
     pub fn roll(&mut self) -> (){
         
-        //self.d1 = rand::thread_rng().gen_range(1..7);
+        self.d1 = rand::thread_rng().gen_range(1..7);
         //self.d2 = rand::thread_rng().gen_range(1..7);
-        self.d1 = 0;
-        self.d2 = 1;
+        //self.d1 = 40;
+        //self.d2 = 0;
         }
     pub fn total(&self) -> i8 {
         let x= &self.d1 + &self.d2;

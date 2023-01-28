@@ -45,7 +45,7 @@ fn main() {
         //this block is used in house buying
         let mut u =0;
         let words: Vec<&str> = input.split_whitespace().collect();
-        println!("{:?}", words);
+        
         if words.len() == 2 && words[0].trim() == "buy_house"{
             u = words[1].parse().unwrap();
             input = words[0].to_string();
@@ -54,7 +54,7 @@ fn main() {
             u = 1;
         }
         
-        //input = input.trim();
+        
         match input.trim(){
             "help" => list_commands(),
             "wallet" => println!("Balance = {}",playe_r[i as usize].money),
@@ -63,6 +63,12 @@ fn main() {
             "move" => { if moved == false{
                         playe_r[i as usize].dice_move(dice.total());
                         println!("You landed on {}",spaces[playe_r[i as usize].boardposition as usize].name);
+                        if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Special{
+                            match &*spaces[playe_r[i as usize].boardposition as usize].name{
+                                "Go" => println!("200 $ have been added to your wallet"),
+                                _ => println!("OK")
+                            }
+                        }
                         if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
                         let x = match spaces[playe_r[i as usize].boardposition as usize].houses{
                                             0 => spaces[playe_r[i as usize].boardposition as usize].rent.basic,
@@ -84,8 +90,8 @@ fn main() {
                         playe_r[spaces[y as usize].owner as usize -1].add_money(x);
                         println!("New balance = {}", playe_r[i as usize].money);
                             }  
-                        else {println!("Price = {}", spaces[playe_r[i as usize].boardposition as usize].price  )}
-                        moved = false}
+                        else if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop {println!("Price = {}", spaces[playe_r[i as usize].boardposition as usize].price  )}
+                        moved = true /*false*/}
                         else {println!("You already moved!")};
 
                         },
@@ -131,7 +137,7 @@ fn main() {
                             }
                         }}
                         }
-            "buy_hotel" => {println!("Type the name of the property you want to put a hotel on:\n{:?}", playe_r[i as usize].props);
+            "buy_hotel" => {
                             let mut hotelable: Vec<String> = Vec::new();
                             let mut choice = String::new();
                             
@@ -144,7 +150,7 @@ fn main() {
                                     
                                 }
                             }
-                            println!("{:?}", hotelable);
+                            println!("Type the name of the property you want to put a hotel on:\n{:?}", hotelable);
                             io::stdin().read_line(&mut choice).unwrap();
                             if hotelable.contains(&choice.trim().to_string()){
                             for q in 0.. playe_r[i as usize].props.len(){
@@ -153,7 +159,7 @@ fn main() {
                                         if choice.trim() == spaces[w].name{
                                             spaces[w].hotel = true;
                                             playe_r[i as usize].take_money(spaces[w].housep);
-                                            println!("Succesfully added hoterl on {}", choice.trim());
+                                            println!("Succesfully added hotel on {}", choice.trim());
                                         }
                                         }
                                 }
