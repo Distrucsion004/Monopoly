@@ -1,4 +1,6 @@
 use rand::Rng;
+
+use crate::player;
 //use std::collections::HashMap;
 pub fn props() -> ([&'static str; 40],[Space;40])   {
     
@@ -142,3 +144,23 @@ impl Dice{
     } 
     }
 
+pub fn win_check(play : &Vec<player::Player>) -> (bool, i8){
+    let mut end = false;
+    let mut best = 0;
+    let mut winner:i8 = -1;
+    for p in 0..play.len(){
+        if play[p].money <= 0{
+            end = true;
+            for h in 0..play.len(){
+                if h != p{
+                    if play[h].money > best{
+                        best = play[h].money;
+                        winner = play[h].number;
+                    }
+                }
+            }
+            return (end, winner);
+        }
+    }
+    return (end, -1);
+}

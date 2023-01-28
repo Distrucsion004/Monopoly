@@ -1,7 +1,7 @@
 use player::{Player, initialize_player};
 use rand::Rng;
 use std::{env };
-use crate::{ data::{SpaceType, PropTypes}};
+use crate::{ data::{SpaceType, PropTypes, win_check}};
 mod data;
 use std::io;
 use std::time::{ Instant};
@@ -34,8 +34,26 @@ fn main() {
     println!("Player {}'s turn:", i+1);
     let mut moved = false;
     loop{
+        
+        if win_check(&playe_r).0 == true{
+            println!("The winner is Player{}", win_check(&playe_r).1);
+            break 'master
+        }
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
+
+        //this block is used in house buying
+        let mut u =0;
+        let words: Vec<&str> = input.split_whitespace().collect();
+        println!("{:?}", words);
+        if words.len() == 2 && words[0].trim() == "buy_house"{
+            u = words[1].parse().unwrap();
+            input = words[0].to_string();
+        }
+        else {
+            u = 1;
+        }
+        
         //input = input.trim();
         match input.trim(){
             "help" => list_commands(),
@@ -88,7 +106,9 @@ fn main() {
             "buy_house" => {println!("Type the name of the property you want to put a house on:\n{:?}", playe_r[i as usize].props);
                         let mut choice = String::new();
                         io::stdin().read_line(&mut choice).unwrap();
+                        for _p in 0..u{
                         'exception :for q in 0.. playe_r[i as usize].props.len(){
+                            
                             if choice.trim() == playe_r[i as usize].props[q]{
                                 for w in 0..40{
                                     let check = &spaces[w];
@@ -104,10 +124,12 @@ fn main() {
                                     
                                         else {spaces[w].houses +=  1;
                                         playe_r[i as usize].take_money(spaces[w].housep);
+                                        
                                         println!("Succesfully added house on {}", names[w]);}
-                                    }}
+                                    }
                                 }   
                             }
+                        }}
                         }
             "buy_hotel" => {println!("Type the name of the property you want to put a hotel on:\n{:?}", playe_r[i as usize].props);
                             let mut hotelable: Vec<String> = Vec::new();
@@ -164,7 +186,7 @@ fn list_commands()->(){
     \"buy_house\" - add a house to a property
     \"buy_hotel\" - add a hotel to a property
     \"loan\"      - take a loan
-    \"trade_prop\"- trade one of your property
+    \"trade_prop\"- trade one of your properties
     \"mortgage\"  - get a mortgage on one of your properties
     \"end\"       - end your turn
             " );
