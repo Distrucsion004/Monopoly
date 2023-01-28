@@ -1,4 +1,5 @@
-use crate::data::{Space, SpaceType};
+use crate::data::{Space, SpaceType, PropTypes};
+
 
 pub fn initialize_player(na : i8) -> Player{
     let p = Player{
@@ -82,8 +83,29 @@ impl Player{
         if h.owned == false{
             h.owned = true;
             h.owner = self.number}
-        else {h.owned = false;}
+        else {h.owned = false;}}
+
+    pub fn check_set(&self, check : &Space, x:&[Space;40])-> bool{
+        let col = &check.class;
+        let mut valid = 0;
+        for k in 0..self.props.len(){
+            if self.props[k] == check.name{
+                for l in 0..40{
+                    if x[l].name == self.props[k] && &x[l].class == col{
+                        valid = valid+1;
+                    }
+                }
+            } 
+        }
+        if col == &PropTypes::Cherry || col == &PropTypes::Blue && valid == 2{
+            return true
+        }
+        if valid == 3{
+            return true
+        }
+        return false
     }
+    
     
     
     }

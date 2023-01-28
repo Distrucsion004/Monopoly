@@ -63,6 +63,7 @@ pub fn props() -> ([&'static str; 40],[Space;40])   {
 
 
 #[derive(Debug)]
+#[derive(PartialEq)]
 pub enum PropTypes{
     Cherry,
     Cyan,
@@ -74,6 +75,13 @@ pub enum PropTypes{
     Blue,
     None
 }
+/*impl Deref for PropTypes{
+    type Target = PropTypes;
+
+    fn deref(&self) -> &Self::Target {
+       return &self.class;
+    }
+}*/
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub enum SpaceType{
