@@ -88,16 +88,17 @@ impl Player{
     pub fn check_set(&self, check : &Space, x:&[Space;40])-> bool{
         let col = &check.class;
         let mut valid = 0;
-        for k in 0..self.props.len(){
-            if self.props[k] == check.name{
+        for k in 0..self.props.len(){   
+            
                 for l in 0..40{
-                    if x[l].name == self.props[k] && &x[l].class == col{
+                    if x[l].name == self.props[k].to_string() && &x[l].class == col{
                         valid = valid+1;
+                        println!("{}", valid);
                     }
                 }
-            } 
+            
         }
-        if col == &PropTypes::Cherry || col == &PropTypes::Blue && valid == 2{
+        if (col == &PropTypes::Cherry || col == &PropTypes::Blue) && valid == 2{
             return true
         }
         if valid == 3{

@@ -6,6 +6,9 @@ mod data;
 use std::io;
 use std::time::{ Instant};
 
+//add invalid input exceptions to buy hotel and buy house funtionallity and add buy in bulk option
+//fix weird output of hotelable options
+// 
 mod player;
 fn main() {
     let start = Instant::now();
@@ -64,7 +67,7 @@ fn main() {
                         println!("New balance = {}", playe_r[i as usize].money);
                             }  
                         else {println!("Price = {}", spaces[playe_r[i as usize].boardposition as usize].price  )}
-                        moved = true}
+                        moved = false}
                         else {println!("You already moved!")};
 
                         },
@@ -82,30 +85,61 @@ fn main() {
                         }
                         else{println!("Not a buyable field");}
                },
-                "buy_house" => {println!("Type the name of the property you want to put a house on:\n{:?}", playe_r[i as usize].props);
-                            let mut choice = String::new();
-                            io::stdin().read_line(&mut choice).unwrap();
-                            'exception :for q in 0.. playe_r[i as usize].props.len(){
-                                if choice.trim() == playe_r[i as usize].props[q]{
-                                    for w in 0..40{
-                                        let check = &spaces[w];
-                                        if playe_r[i as usize].check_set(check, &spaces) == false{
-                                            println!("You don't own the whole set!");
-                                            break 'exception;
-                                        } 
-                                        else if choice.trim() == names[w]{
-                                            
-                                            if spaces[w].houses >=4{
-                                                println!("You already have 4 houses on this field!");
-                                            }
+            "buy_house" => {println!("Type the name of the property you want to put a house on:\n{:?}", playe_r[i as usize].props);
+                        let mut choice = String::new();
+                        io::stdin().read_line(&mut choice).unwrap();
+                        'exception :for q in 0.. playe_r[i as usize].props.len(){
+                            if choice.trim() == playe_r[i as usize].props[q]{
+                                for w in 0..40{
+                                    let check = &spaces[w];
+                                    if choice.trim() == names[w] && playe_r[i as usize].check_set(check, &spaces) == false { 
+                                        println!("You don't own the whole set!");
+                                        break 'exception;
+                                    } 
+                                    else if choice.trim() == names[w]{
                                         
-                                            else {spaces[w].houses +=  1;
-                                            playe_r[i as usize].take_money(spaces[q].housep);
-                                            println!("Succesfully added house on {}", names[w]);}
-                                        }}
-                                    }
+                                        if spaces[w].houses >=4{
+                                            println!("You already have 4 houses on this field!");
+                                        }
+                                    
+                                        else {spaces[w].houses +=  1;
+                                        playe_r[i as usize].take_money(spaces[w].housep);
+                                        println!("Succesfully added house on {}", names[w]);}
+                                    }}
+                                }   
+                            }
+                        }
+            "buy_hotel" => {println!("Type the name of the property you want to put a hotel on:\n{:?}", playe_r[i as usize].props);
+                            let mut hotelable: Vec<String> = Vec::new();
+                            let mut choice = String::new();
+                            
+                            for q in 0.. playe_r[i as usize].props.len(){
+                               
+                                    for w in 0..40{
+                                        if playe_r[i as usize].props[q] == names[w] && spaces[w].houses == 4 && spaces[w].hotel == false{
+                                            hotelable.push(names[w].to_string());
+                                        }
+                                    
                                 }
                             }
+                            println!("{:?}", hotelable);
+                            io::stdin().read_line(&mut choice).unwrap();
+                            if hotelable.contains(&choice.trim().to_string()){
+                            for q in 0.. playe_r[i as usize].props.len(){
+                                if choice.trim() == playe_r[i as usize].props[q]{
+                                    for w in 0..40{
+                                        if choice.trim() == spaces[w].name{
+                                            spaces[w].hotel = true;
+                                            playe_r[i as usize].take_money(spaces[w].housep);
+                                            println!("Succesfully added hoterl on {}", choice.trim());
+                                        }
+                                        }
+                                }
+                                    
+                                }
+                            }
+                            else {println!("Not a valid field!")}
+            }
             
             "owned" => {println!("props = {:?},\n railroads = {:?},\n utilities = {:?}\n", playe_r[i as usize].props, playe_r[i as usize].railroads, playe_r[i as usize].utilities);}
             "end" => {break},

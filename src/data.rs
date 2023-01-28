@@ -130,8 +130,10 @@ pub struct Dice{
 impl Dice{
     pub fn roll(&mut self) -> (){
         
-        self.d1 = rand::thread_rng().gen_range(1..7);
-        self.d2 = rand::thread_rng().gen_range(1..7);
+        //self.d1 = rand::thread_rng().gen_range(1..7);
+        //self.d2 = rand::thread_rng().gen_range(1..7);
+        self.d1 = 0;
+        self.d2 = 1;
         }
     pub fn total(&self) -> i8 {
         let x= &self.d1 + &self.d2;
