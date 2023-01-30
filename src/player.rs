@@ -1,6 +1,5 @@
 use crate::data::{Space, SpaceType, PropTypes};
 
-
 pub fn initialize_player(na : i8) -> Player{
     let p = Player{
         number: na,
@@ -76,18 +75,16 @@ impl Player{
     pub fn leave_jail(&mut self) ->(){
         self.in_jail = false 
     }
-    pub fn check_balance(&self) ->(){
-        println!("{}", self.money);
-    }
-    pub fn check_props(&self) ->(){
+    /*pub fn check_props(&self) ->(){
         println!("{:?}", self.props);
         println!("{:?}", self.railroads);
-        println!("{:?}", self.utilities);}
+        println!("{:?}", self.utilities);}*/
     pub fn update_ownership(&self, mut h : &mut Space,) -> (){
         if h.owned == false{
             h.owned = true;
             h.owner = self.number}
         else {h.owned = false;}}
+
 
     pub fn check_set(&self, check : &Space, x:&[Space;40])-> bool{
         let col = &check.class;
@@ -109,6 +106,11 @@ impl Player{
             return true
         }
         return false
+    }
+
+    pub fn payToLeave(&mut self) -> (){
+        self.take_money(50);
+        self.in_jail  = false;
     }
     
     

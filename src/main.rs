@@ -1,8 +1,9 @@
 use player::{Player, initialize_player};
-use rand::Rng;
+use rand::{Rng, seq::index::IndexVecIntoIter};
 use std::{env };
-use crate::{ data::{SpaceType, PropTypes, win_check}};
+use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init}};
 mod data;
+
 use std::io;
 use std::time::{ Instant};
 
@@ -17,6 +18,7 @@ fn main() {
     let count = player_count.parse::<i32>().unwrap();
     println!("{}", count);
     let mut playe_r:Vec<Player> = Vec::new();
+    let mut jails:Vec<Jail> = Vec::new();
     for player in 0..count{
         playe_r.push(initialize_player(player as i8 + 1));
     }
@@ -30,14 +32,59 @@ fn main() {
     println!("{:?}", duration);
     println!("Enter \"help\" for a list of commands");
     'master: loop{
-    for  i in 0..count{
+    'play: for  i in 0..count{
     println!("Player {}'s turn:", i+1);
     let mut moved = false;
-    loop{
+    'b: loop{
         
         if win_check(&playe_r).0 == true{
             println!("The winner is Player{}", win_check(&playe_r).1);
             break 'master
+        }
+        if playe_r[i as usize].in_jail == true{
+            for k in 0..jails.len(){
+            if &jails[k].player == &playe_r[i as usize].number{
+                loop{
+                    if jails[k].roundsInJail == 0{
+                    jails[k].jail_prompt(&playe_r[i as usize].number);
+                }
+                    else {println!("IN JAIL")}
+                let mut yo = String::new();
+                io::stdin().read_line(&mut yo).unwrap();
+                yo = yo.to_string();
+                match yo.trim(){
+                    "roll" =>{
+                        if jails[k].diceOp == true{
+                        dice.roll();
+                        println!("{}, {}", &dice.d1, &dice.d2);
+                        
+                        if jails[k].rollSuccess(dice.d1, dice.d2) == true{
+                            println!("You rolled a double, you are now out of jail!");
+                            playe_r[i as usize].leave_jail();
+                            break
+                        }
+                        else{jails[k].fail();
+                            println!("You failed. You can try again for {} more rounds", 3 - jails[k].roundsFailed);
+                            jails[k].roundsInJail += 1;
+                        break 'b
+                    }
+                        ;}
+                        
+                    },
+                    "pay"  =>{playe_r[i as usize].payToLeave();
+                        println!("You paid $50 to get out of jail!\nNew balance is {}", playe_r[i as usize].money); 
+                        break },
+                    "pass" =>{
+                        jails[k].roundsInJail += 1;
+                        continue 'master
+                    }
+                    
+                    &_ => println!("Enter a valid option!"),
+                }
+            }
+            }}
+            
+            
         }
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
@@ -66,6 +113,12 @@ fn main() {
                         if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Special{
                             match &*spaces[playe_r[i as usize].boardposition as usize].name{
                                 "Go" => println!("200 $ have been added to your wallet"),
+                                "Go to Jail" => {jails.push(jail_init(&playe_r[i as usize]));
+                                                
+                                                playe_r[i as usize].boardposition = 10;
+                                                playe_r[i as usize].go_to_jail();
+                                                continue
+                                            }
                                 _ => println!("OK")
                             }
                         }
@@ -88,10 +141,10 @@ fn main() {
                         playe_r[i as usize].take_money(x);
                         let y = playe_r[i as usize].boardposition;
                         playe_r[spaces[y as usize].owner as usize -1].add_money(x);
-                        println!("New balance = {}", playe_r[i as usize].money);
+                        println!("New balance  n= {}", playe_r[i as usize].money);
                             }  
                         else if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop {println!("Price = {}", spaces[playe_r[i as usize].boardposition as usize].price  )}
-                        moved = true /*false*/}
+                        moved = /*true*/ false}
                         else {println!("You already moved!")};
 
                         },

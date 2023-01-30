@@ -3,7 +3,6 @@ use rand::Rng;
 use crate::player;
 //use std::collections::HashMap;
 pub fn props() -> ([&'static str; 40],[Space;40])   {
-    
     let board: [&str; 40] = [   "Go", "Mediteranian Avenue", "Chest",
                                 "Baltic Avenue", "Income Tax", "Reading Railroad",
                                 "Oriental Avenue", "Chance", "Vermont Avenue",
@@ -133,10 +132,10 @@ pub struct Dice{
 impl Dice{
     pub fn roll(&mut self) -> (){
         
-        self.d1 = rand::thread_rng().gen_range(1..7);
+        //self.d1 = rand::thread_rng().gen_range(1..7);
         //self.d2 = rand::thread_rng().gen_range(1..7);
-        //self.d1 = 40;
-        //self.d2 = 0;
+        self.d1 = 30;
+        self.d2 = 0;
         }
     pub fn total(&self) -> i8 {
         let x= &self.d1 + &self.d2;
@@ -165,3 +164,51 @@ pub fn win_check(play : &Vec<player::Player>) -> (bool, i8){
     }
     return (end, -1);
 }
+
+pub fn jail_init(p : &player::Player) -> Jail{
+    let x = Jail{
+        roundsInJail : 0,
+        roundsFailed : 0,
+        diceOp : true,
+        player : p.number
+    };
+    return x;
+    } 
+
+pub struct Jail{
+    pub roundsInJail : i32,
+    pub roundsFailed: i32,
+    pub diceOp : bool,
+    pub player : i8
+}
+
+
+impl Jail {
+    pub fn jail_prompt(&self, x : &i8) -> (){
+        if *x == 0 {
+        println!("You are now in jail. To get out you have 2 options:\n1.Pay $50 to get out.\n2. Roll the dice and get out if you get a double/n
+        If you fail 3 rounds in a row, you have to pay $50 to get out.");
+        }
+        else{
+        println!("You are in jail. To get out you have 2 options:\n1. Pay $50 to get out.\n2. Roll the dice and get out if you get a double/n
+        If you fail 3 rounds in a row, you have to pay $50 to get out.\nYou have already failed {} rounds", self.roundsFailed); }
+    }
+
+    pub fn rollSuccess(&mut self, x:i8, y: i8) -> bool{
+        if x == y {
+            return true
+        }
+       
+        return false
+    }
+    pub fn fail(&mut self)-> (){
+        self.roundsFailed += 1;
+        if self.roundsFailed == 3{
+        self.diceOp = false;
+        }
+
+    }
+
+
+}
+
