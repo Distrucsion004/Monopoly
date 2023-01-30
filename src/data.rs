@@ -134,7 +134,7 @@ impl Dice{
         
         //self.d1 = rand::thread_rng().gen_range(1..7);
         //self.d2 = rand::thread_rng().gen_range(1..7);
-        self.d1 = 30;
+        self.d1 = 20;
         self.d2 = 0;
         }
     pub fn total(&self) -> i8 {
@@ -167,7 +167,7 @@ pub fn win_check(play : &Vec<player::Player>) -> (bool, i8){
 
 pub fn jail_init(p : &player::Player) -> Jail{
     let x = Jail{
-        roundsInJail : 0,
+        rounds_in_jail : 0,
         roundsFailed : 0,
         diceOp : true,
         player : p.number
@@ -176,7 +176,7 @@ pub fn jail_init(p : &player::Player) -> Jail{
     } 
 
 pub struct Jail{
-    pub roundsInJail : i32,
+    pub rounds_in_jail : i32,
     pub roundsFailed: i32,
     pub diceOp : bool,
     pub player : i8
@@ -210,5 +210,13 @@ impl Jail {
     }
 
 
+}
+
+pub fn parkPrompt() -> (){
+    println!("Press 1 to pay 100$ to move anywhere on the board ")
+}
+
+pub fn freeParking(s:i32) -> (){
+    
 }
 

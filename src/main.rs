@@ -7,9 +7,7 @@ mod data;
 use std::io;
 use std::time::{ Instant};
 
-//add invalid input exceptions to buy hotel and buy house funtionallity and add buy in bulk option
-//fix weird output of hotelable options
-// 
+
 mod player;
 fn main() {
     let start = Instant::now();
@@ -45,7 +43,7 @@ fn main() {
             for k in 0..jails.len(){
             if &jails[k].player == &playe_r[i as usize].number{
                 loop{
-                    if jails[k].roundsInJail == 0{
+                    if jails[k].rounds_in_jail == 0{
                     jails[k].jail_prompt(&playe_r[i as usize].number);
                 }
                     else {println!("IN JAIL")}
@@ -65,7 +63,7 @@ fn main() {
                         }
                         else{jails[k].fail();
                             println!("You failed. You can try again for {} more rounds", 3 - jails[k].roundsFailed);
-                            jails[k].roundsInJail += 1;
+                            jails[k].rounds_in_jail += 1;
                         break 'b
                     }
                         ;}
@@ -75,7 +73,7 @@ fn main() {
                         println!("You paid $50 to get out of jail!\nNew balance is {}", playe_r[i as usize].money); 
                         break },
                     "pass" =>{
-                        jails[k].roundsInJail += 1;
+                        jails[k].rounds_in_jail += 1;
                         continue 'master
                     }
                     
@@ -119,8 +117,44 @@ fn main() {
                                                 playe_r[i as usize].go_to_jail();
                                                 continue
                                             }
+                                "Free Parking" => {
+                                    println!("Press 1 to pay 100$ to move anywhere on the board\nPress enter to decline ");
+                                    let mut mo = String::new();
+                                    io::stdin().read_line(&mut mo).unwrap();
+                                    
+                                    match mo.trim(){
+                                        "1" => {
+                                            'out: loop{
+                                            println!("Enter the name of the field you want to go to (besides chance or chest): ");
+                                            let mut mo1 = String::new();
+                                            io::stdin().read_line(&mut mo1).unwrap();
+                                            for lo in 0..40{
+                                                if spaces[lo].name == mo1.trim().to_string(){
+                                                    playe_r[i as usize].dice_move(
+                                                        if spaces[lo].boardposition > 20{
+                                                        spaces[lo].boardposition as i8 - 20
+                                                        }
+                                                        else{
+                                                        20 + spaces[lo].boardposition as i8});
+                                                    println!("Succesfully landed on {}", names[playe_r[i as usize].boardposition as usize]);
+                                                    if playe_r[i as usize].boardposition == 0{
+                                                        println!("200 $ have been added to your wallet");
+                                                    }
+                                                    playe_r[i as usize].take_money(100);
+                                                break 'out
+
+                                                }
+                                            }
+                                                println!("Not a valid field");}
+                                        },
+                                        _ => break
+                                    }
+                                    }
+                                
+                                
                                 _ => println!("OK")
                             }
+                            
                         }
                         if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
                         let x = match spaces[playe_r[i as usize].boardposition as usize].houses{
@@ -144,7 +178,7 @@ fn main() {
                         println!("New balance  n= {}", playe_r[i as usize].money);
                             }  
                         else if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop {println!("Price = {}", spaces[playe_r[i as usize].boardposition as usize].price  )}
-                        moved = /*true*/ false}
+                        moved = /*true*/ false;}
                         else {println!("You already moved!")};
 
                         },
