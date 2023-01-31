@@ -79,12 +79,14 @@ impl Player{
         println!("{:?}", self.props);
         println!("{:?}", self.railroads);
         println!("{:?}", self.utilities);}*/
-    pub fn update_ownership(&self, mut h : &mut Space,) -> (){
+    pub fn update_ownership(&self, mut h : &mut Space,) -> i32{
         if h.owned == false{
             h.owned = true;
-            h.owner = self.number}
-        else {h.owned = false;}}
-
+            h.owner = self.number;
+            return 1;}
+        h.owned = false;
+        return 2;
+        }
 
     pub fn check_set(&self, check : &Space, x:&[Space;40])-> bool{
         let col = &check.class;

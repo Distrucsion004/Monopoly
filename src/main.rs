@@ -1,8 +1,9 @@
 use player::{Player, initialize_player};
 use rand::{Rng, seq::index::IndexVecIntoIter};
 use std::{env };
-use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init}};
+use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match}};
 mod data;
+mod chances;
 
 use std::io;
 use std::time::{ Instant};
@@ -157,7 +158,10 @@ fn main() {
                             
                         }
                         if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
-                        let x = match spaces[playe_r[i as usize].boardposition as usize].houses{
+                        let mut opi = playe_r[i as usize].boardposition as i32;
+                        let mut ren = rent_match(&mut playe_r, opi, &mut spaces);
+                        let x = find_rent( opi, &mut spaces, ren );
+                            /*let x = match spaces[playe_r[i as usize].boardposition as usize].houses{
                                             0 => spaces[playe_r[i as usize].boardposition as usize].rent.basic,
                                             1 => spaces[playe_r[i as usize].boardposition as usize].rent.house1,
                                             2 => spaces[playe_r[i as usize].boardposition as usize].rent.house2,
@@ -170,7 +174,7 @@ fn main() {
                                                 }
                                             },
                                             _ => panic!("Problem in getting rent price")
-                                    };
+                                    };*/
                         println!("Owned by player {},\nYou have to pay {} $ in rent", spaces[playe_r[i as usize].boardposition as usize].owner, x);
                         playe_r[i as usize].take_money(x);
                         let y = playe_r[i as usize].boardposition;
@@ -196,6 +200,11 @@ fn main() {
                         }
                         else{println!("Not a buyable field");}
                },
+            "ch" => {
+                        chances::ch3(&mut playe_r,i as usize, &mut spaces);
+                        println!("{}", playe_r[i as usize].boardposition);
+            }
+
             "buy_house" => {println!("Type the name of the property you want to put a house on:\n{:?}", playe_r[i as usize].props);
                         let mut choice = String::new();
                         io::stdin().read_line(&mut choice).unwrap();
