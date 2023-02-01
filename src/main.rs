@@ -1,7 +1,7 @@
 use player::{Player, initialize_player};
 use rand::{Rng, seq::index::IndexVecIntoIter};
-use std::{env };
-use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match}};
+use std::{env, net::ToSocketAddrs };
+use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match}, chances::{chances, ch1, ch0, ch2, ch3, ch4}};
 mod data;
 mod chances;
 
@@ -10,6 +10,8 @@ use std::time::{ Instant};
 
 
 mod player;
+
+//really gotta add comments and clean up many parts of this
 fn main() {
     let start = Instant::now();
     let args: Vec<String> = env::args().collect();
@@ -109,6 +111,24 @@ fn main() {
             "move" => { if moved == false{
                         playe_r[i as usize].dice_move(dice.total());
                         println!("You landed on {}",spaces[playe_r[i as usize].boardposition as usize].name);
+                        if spaces[playe_r[i as usize].boardposition as usize].name == "Chance".to_string(){
+                            let ch = rand::thread_rng().gen_range(0..5);
+                            let chanc = chances();
+                            let act = chanc[ch as usize - 1];
+                            println!("You drew: {}", act);
+                            match ch {
+                                1 => ch0(&mut playe_r[i as usize]),
+                                2 => ch1(&mut playe_r[i as usize]),
+                                3 => ch2(&mut playe_r[i as usize]),
+                                4 => {ch3(&mut playe_r, i as usize, &mut spaces);
+                                    println!("Succesfully moved to {}", names[playe_r[i as usize].boardposition as usize])}
+                                5 => {ch4(&mut playe_r, i as usize, &mut spaces);
+                                    println!("Succesfully moved to {}", names[playe_r[i as usize].boardposition as usize])}
+                                _ => panic!("Chance problem")
+
+                            }
+
+                        }
                         if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Special{
                             match &*spaces[playe_r[i as usize].boardposition as usize].name{
                                 "Go" => println!("200 $ have been added to your wallet"),
@@ -199,11 +219,7 @@ fn main() {
                             println!("Space is already owned by player {}",spaces[playe_r[i as usize].boardposition as usize].owner);
                         }
                         else{println!("Not a buyable field");}
-               },
-            "ch" => {
-                        chances::ch3(&mut playe_r,i as usize, &mut spaces);
-                        println!("{}", playe_r[i as usize].boardposition);
-            }
+               },   
 
             "buy_house" => {println!("Type the name of the property you want to put a house on:\n{:?}", playe_r[i as usize].props);
                         let mut choice = String::new();

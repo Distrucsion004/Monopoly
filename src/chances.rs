@@ -3,25 +3,25 @@ use core::prelude;
 use crate::{player::Player, data::{Space, find_rent, PropTypes, SpaceType, rent_match}};
 
 
-pub fn chances() -> [&'static str; 16]{
-    let chances : [&'static str; 16] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
-                                "Advance to nearest utility, if owned roll the dice and pay 10X what you roll", "Bank pays you $10",
+pub fn chances() -> [&'static str; 5]{
+    let chances : [&'static str; 5] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
+                                "Advance to nearest utility, if owned roll the dice and pay 10X what you roll" /*, "Bank pays you $10",
                                 "Get out of jail free card", "Go back 3 spaces", "Go to Jail", "For each house owned pay $25 and for each hotel $100",
                                 "Speeding fine $15", "Go to Reading Railroad", "You have been elected Chairman of the Board. Pay each player $50",
                                 "Your building loan matures. Collect $150", "Advance to the nearest railroad",
-                                "Advance to Illinois Avenue"];
+                                "Advance to Illinois Avenue"*/];
     return chances;
     }
 
-pub fn ch0(mut pl : Player) -> (){
+pub fn ch0(mut pl : &mut Player) -> (){
     pl.boardposition = 39;
 }
 
-pub fn ch1(mut pl : Player) -> (){
+pub fn ch1(mut pl : &mut Player) -> (){
     pl.boardposition = 0;
 }
 
-pub fn ch2(mut pl : Player) -> (){
+pub fn ch2(mut pl : &mut Player) -> (){
     pl.boardposition = 0;
 }
 
