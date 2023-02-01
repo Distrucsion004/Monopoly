@@ -6,7 +6,7 @@ mod data;
 mod chances;
 
 use std::io;
-use std::time::{ Instant};
+use std::time::{Instant};
 
 
 mod player;
@@ -118,7 +118,7 @@ fn main() {
                             println!("You drew: {}", act);
                             match ch {
                                 1 => ch0(&mut playe_r[i as usize]),
-                                2 => ch1(&mut playe_r[i as usize]),
+                                2 => ch1(&mut playe_r[i as usize]), 
                                 3 => ch2(&mut playe_r[i as usize]),
                                 4 => {ch3(&mut playe_r, i as usize, &mut spaces);
                                     println!("Succesfully moved to {}", names[playe_r[i as usize].boardposition as usize])}
@@ -129,7 +129,14 @@ fn main() {
                             }
 
                         }
-                        if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Special{
+                        else if spaces[playe_r[i as usize].boardposition as usize].kind == SpaceType::Tax{
+                            let pays = spaces[playe_r[i as usize].boardposition as usize].price;
+                            playe_r[i as usize].take_money(pays);
+                            println!("You have to pay ${}",spaces[playe_r[i as usize].boardposition as usize].price );
+                            println!("New balance {}", playe_r[i as usize].money);
+                            
+                        }
+                        else if spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Special{
                             match &*spaces[playe_r[i as usize].boardposition as usize].name{
                                 "Go" => println!("200 $ have been added to your wallet"),
                                 "Go to Jail" => {jails.push(jail_init(&playe_r[i as usize]));
@@ -177,9 +184,9 @@ fn main() {
                             }
                             
                         }
-                        if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
-                        let mut opi = playe_r[i as usize].boardposition as i32;
-                        let mut ren = rent_match(&mut playe_r, opi, &mut spaces);
+                        else if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
+                        let opi = playe_r[i as usize].boardposition as i32;
+                        let ren = rent_match(&mut playe_r, opi, &mut spaces);
                         let x = find_rent( opi, &mut spaces, ren );
                             /*let x = match spaces[playe_r[i as usize].boardposition as usize].houses{
                                             0 => spaces[playe_r[i as usize].boardposition as usize].rent.basic,

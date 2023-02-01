@@ -2,7 +2,6 @@ use core::prelude;
 
 use crate::{player::Player, data::{Space, find_rent, PropTypes, SpaceType, rent_match}};
 
-
 pub fn chances() -> [&'static str; 5]{
     let chances : [&'static str; 5] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
                                 "Advance to nearest utility, if owned roll the dice and pay 10X what you roll" /*, "Bank pays you $10",
@@ -81,7 +80,7 @@ pub fn ch4 (lu:&mut Vec<Player>,pl: usize, li :&mut [Space; 40]) ->(){
     else {lu[pl].dice_move((28 - posi) as i8)};
     
     if li[posi as usize].owned == true{
-        println!{"Reached Check"};
+        //println!{"Reached Check"};
         let you = posi as i32;
         let ren = rent_match(lu, you, li);
         let idk =find_rent( you , li, ren);
