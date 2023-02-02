@@ -1,7 +1,8 @@
 use rand::Rng;
 
 use crate::player::{self, Player};
-//use std::collections::HashMap;
+
+// this function is used to send all the data for every space in the monopoly board to other modules.
 pub fn props() -> ([&'static str; 40],[Space;40])   {
     let board: [&str; 40] = [   "Go", "Mediteranian Avenue", "Chest",
                                 "Baltic Avenue", "Income Tax", "Reading Railroad",
@@ -62,6 +63,8 @@ pub fn props() -> ([&'static str; 40],[Space;40])   {
     return (board,spaces);
 
 }
+
+//returns the correct rent price for a certain field corresponding to the number of houses on it 
 pub fn find_rent( pos : i32,b: &mut [Space;40], ret: i32) -> i32 {
     match ret{
         0 => return b[pos as usize].rent.basic,
@@ -78,6 +81,8 @@ pub fn find_rent( pos : i32,b: &mut [Space;40], ret: i32) -> i32 {
         _ => panic!("Problem in getting rent price")
     };
 }
+
+//returns the number to send to the match clause in the above function 
 pub fn rent_match(ow:&mut Vec<Player>,pos : i32,b: &mut [Space;40])-> i32{
     if b[pos as usize].kind == SpaceType::Railroad{
         println!("{}",b[pos as usize].owner);
@@ -101,13 +106,7 @@ pub enum PropTypes{
     Blue,
     None
 }
-/*impl Deref for PropTypes{
-    type Target = PropTypes;
 
-    fn deref(&self) -> &Self::Target {
-       return &self.class;
-    }
-}*/
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub enum SpaceType{
@@ -147,7 +146,7 @@ pub struct Space{
     pub housep : i32
 }
 
-
+//struct for Dice with a method to roll them
 pub struct Dice{
     pub d1 : i8,
     pub d2 : i8,
@@ -167,7 +166,7 @@ impl Dice{
         return x ;
     } 
     }
-
+//checks if somebody won the game
 pub fn win_check(play : &Vec<player::Player>) -> (bool, i8){
     let mut end = false;
     let mut best = 0;
@@ -189,6 +188,7 @@ pub fn win_check(play : &Vec<player::Player>) -> (bool, i8){
     return (end, -1);
 }
 
+//generates jail instance for when a player goes to jail
 pub fn jail_init(p : &player::Player) -> Jail{
     let x = Jail{
         rounds_in_jail : 0,
@@ -199,6 +199,7 @@ pub fn jail_init(p : &player::Player) -> Jail{
     return x;
     } 
 
+//jail struct from when a player goes to jail
 pub struct Jail{
     pub rounds_in_jail : i32,
     pub roundsFailed: i32,
@@ -225,6 +226,8 @@ impl Jail {
        
         return false
     }
+
+    //this function is called when the dice roll fails
     pub fn fail(&mut self)-> (){
         self.roundsFailed += 1;
         if self.roundsFailed == 3{

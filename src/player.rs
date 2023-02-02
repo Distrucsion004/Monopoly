@@ -1,6 +1,7 @@
 use crate::data::{Space, SpaceType, PropTypes};
 use std::{collections::HashMap};
 
+//generates a default player
 pub fn initialize_player(na : i8) -> Player{
     let p = Player{
         number: na,
@@ -16,6 +17,7 @@ pub fn initialize_player(na : i8) -> Player{
 }
 #[derive(Debug)]
 #[derive(Clone)]
+
 pub struct Player{
     pub number : i8,
     pub money: i32,
@@ -35,6 +37,8 @@ impl Player{
     pub fn add_money(&mut self, x : i32) -> (){
         self.money = self.money + x;
     }
+
+    //moves a number of spaces on the board, usually the ones shown by the dice and automatically activates go 
     pub fn dice_move(&mut self, x : i8) -> (){
         
         let y = self.boardposition + x as i32;
@@ -50,6 +54,7 @@ impl Player{
         }
         
     }
+
     pub fn add_railroad(&mut self, r : &Space) -> (){
         self.railroads.push(r.name.to_string());
     }

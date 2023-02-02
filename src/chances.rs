@@ -13,11 +13,13 @@ pub fn chances() -> [&'static str; 5]{
     }
 
 pub fn ch0(mut pl : &mut Player) -> (){
-    pl.boardposition = 39;
+    if pl.boardposition == 39{   
+    }
 }
 
 pub fn ch1(mut pl : &mut Player) -> (){
-    pl.boardposition = 0;
+    pl.dice_move(40 - pl.boardposition as i8);
+    println!("$200 have been added to your wallet!")
 }
 
 pub fn ch2(mut pl : &mut Player) -> (){
