@@ -112,7 +112,7 @@ fn main() {
                         playe_r[i as usize].dice_move(dice.total());
                         println!("You landed on {}",spaces[playe_r[i as usize].boardposition as usize].name);
                         if spaces[playe_r[i as usize].boardposition as usize].name == "Chance".to_string(){
-                            let ch = rand::thread_rng().gen_range(0..5);
+                            let ch = rand::thread_rng().gen_range(0..4);
                             let chanc = chances();
                             let act = chanc[ch as usize - 1];
                             println!("You drew: {}", act);
@@ -254,7 +254,8 @@ fn main() {
                                     }
                                 }   
                             }
-                        }}
+                        }
+                    }
                         }
             "buy_hotel" => {
                             let mut hotelable: Vec<String> = Vec::new();
@@ -287,7 +288,42 @@ fn main() {
                             }
                             else {println!("Not a valid field!")}
             }
-            
+            "mortgage" => {
+                            let mut mortgageable: Vec<String> = Vec::new();
+                            let mut choice = String::new();
+                            for q in 0.. playe_r[i as usize].props.len(){
+                                for w in 0..40{
+                                if playe_r[i as usize].props[q] == names[w] && spaces[w].mortgage == false{
+                                mortgageable.push(names[w].to_string());
+                                }
+                            }
+                        }
+                        println!("Type the name of the property you want to mortgage:\n{:?}", mortgageable);
+                        io::stdin().read_line(&mut choice).unwrap();
+                        if mortgageable.contains(&choice.trim().to_string()){
+                        for q in 0.. playe_r[i as usize].props.len(){
+                            if choice.trim() == playe_r[i as usize].props[q]{
+                            for w in 0..40 {
+                                if choice.trim() == spaces[w].name{
+                                    spaces[w].mortgage = true;
+                                    if spaces[w].houses > 0{
+                                    println!{"Removed all {} houses from the property.", spaces[w].houses};
+                                    let back = spaces[w].houses as i32 * spaces[w].housep /2;
+                                    println!("Added ${} to your wallet!", back);
+                                    playe_r[i as usize].add_money(back);
+                                    }
+                                    spaces[w].houses = 0;
+                                    playe_r[i as usize].props.remove(q);
+                                    playe_r[i as usize].mortgaged.insert(names[w].to_string(), 0);
+                                    //let added = playe_r[i as usize].mortgaged.len() - 1;
+                                    println!("Succesfully took a mortgage on {} for ${}", names[w].to_string(),spaces[w].rent.mortgage);
+                                    playe_r[i as usize ].add_money(spaces[w].rent.mortgage);
+                                }
+                            }
+                        }
+                    }
+                    }
+                    }            
             "owned" => {println!("props = {:?},\n railroads = {:?},\n utilities = {:?}\n", playe_r[i as usize].props, playe_r[i as usize].railroads, playe_r[i as usize].utilities);}
             "end" => {break},
             "QUIT" => {break 'master}

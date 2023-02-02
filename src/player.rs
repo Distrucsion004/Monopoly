@@ -1,4 +1,5 @@
 use crate::data::{Space, SpaceType, PropTypes};
+use std::{collections::HashMap};
 
 pub fn initialize_player(na : i8) -> Player{
     let p = Player{
@@ -8,6 +9,7 @@ pub fn initialize_player(na : i8) -> Player{
         railroads : Vec::new(),
         utilities : Vec::new(),
         props : Vec::new(),
+        mortgaged: HashMap::new(),
         in_jail : false
     };
     return p
@@ -21,6 +23,7 @@ pub struct Player{
     pub railroads: Vec<String>,
     pub utilities: Vec<String>,
     pub props: Vec<String>,
+    pub mortgaged: HashMap<String, i8>,
     pub in_jail: bool,
 }
 
@@ -39,7 +42,7 @@ impl Player{
             self.boardposition = y;
         }
         else {
-            self.boardposition = y -40;
+            self.boardposition = y - 40;
             self.add_money(200);
             if self.boardposition != 0{
             println!("You passed by Go\n200 $ have been added to your wallet")
@@ -79,14 +82,12 @@ impl Player{
         println!("{:?}", self.props);
         println!("{:?}", self.railroads);
         println!("{:?}", self.utilities);}*/
-    pub fn update_ownership(&self, mut h : &mut Space,) -> i32{
+    pub fn update_ownership(&self, mut h : &mut Space,) -> (){
         if h.owned == false{
             h.owned = true;
-            h.owner = self.number;
-            return 1;}
-        h.owned = false;
-        return 2;
-        }
+            h.owner = self.number}
+        else {h.owned = false;}}
+
 
     pub fn check_set(&self, check : &Space, x:&[Space;40])-> bool{
         let col = &check.class;
