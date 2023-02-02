@@ -10,7 +10,7 @@ use std::time::{Instant};
 
 
 mod player;
-
+//fix weird go chance bullshit
 //really gotta add comments and clean up many parts of this
 fn main() {
     let start = Instant::now();
@@ -35,6 +35,12 @@ fn main() {
     'master: loop{
     'play: for  i in 0..count{
     println!("Player {}'s turn:", i+1);
+    
+    for w in 0..40{
+        if spaces[w].mortgage == true && playe_r[i as usize].mortgaged.contains_key(&spaces[w].name) == true{
+            *playe_r[i as usize].mortgaged.get_mut(&spaces[w].name).unwrap() += 1;
+        }
+    }
     let mut moved = false;
     'b: loop{
         
@@ -42,6 +48,7 @@ fn main() {
             println!("The winner is Player{}", win_check(&playe_r).1);
             break 'master
         }
+        
         if playe_r[i as usize].in_jail == true{
             for k in 0..jails.len(){
             if &jails[k].player == &playe_r[i as usize].number{
@@ -289,7 +296,7 @@ fn main() {
                             else {println!("Not a valid field!")}
             }
             "mortgage" => {
-                            let mut mortgageable: Vec<String> = Vec::new();
+                        let mut mortgageable: Vec<String> = Vec::new();
                             let mut choice = String::new();
                             for q in 0.. playe_r[i as usize].props.len(){
                                 for w in 0..40{
@@ -323,7 +330,24 @@ fn main() {
                         }
                     }
                     }
-                    }            
+                    }
+            "lift_mortgage" =>{
+                                println!("Choose the property you want to lift the mortgage off of:");
+                                let mut pay:i32 = 0;
+                                println!("{:?}", playe_r[i as usize].mortgaged.keys());
+                                let mut choice = String::new();
+                                std::io::stdin().read_line(&mut choice).unwrap();
+                                choice = choice.trim().to_string();
+                                if playe_r[i as usize].mortgaged.contains_key(&choice){
+                                    for k in 0..40{
+                                        if spaces[k].name == choice{
+                                            pay = (spaces[k].rent.mortgage * (100 + (playe_r[i as usize].mortgaged[&choice] as i32 * 10)))/100;
+                                            println!("{}", pay);
+                                        }
+                                    }
+                                    pay = playe_r[i as usize].mortgaged[&choice] as i32;
+                                }
+            }
             "owned" => {println!("props = {:?},\n railroads = {:?},\n utilities = {:?}\n", playe_r[i as usize].props, playe_r[i as usize].railroads, playe_r[i as usize].utilities);}
             "end" => {break},
             "QUIT" => {break 'master}
