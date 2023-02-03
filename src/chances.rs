@@ -1,12 +1,12 @@
 use core::prelude;
 
-use crate::{player::{Player, self}, data::{Space, find_rent, PropTypes, SpaceType, rent_match, props}};
+use crate::{player::{Player, self}, data::{Space, find_rent, PropTypes, SpaceType, rent_match, props, jail_init, Jail}};
 
-pub fn chances() -> [&'static str; 8]{
-    let chances : [&'static str; 8] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
+pub fn chances() -> [&'static str; 11]{
+    let chances : [&'static str; 11] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
                                 "Advance to nearest utility, if owned roll the dice and pay 10X what you roll" , "Bank pays you $10",
-                                "Get out of jail free card", "Go back 3 spaces"/*, "Go to Jail", "For each house owned pay $25 and for each hotel $100",
-                                "Speeding fine $15", "Go to Reading Railroad", "You have been elected Chairman of the Board. Pay each player $50",
+                                "Get out of jail free card", "Go back 3 spaces", "Go to Jail", "For each house owned pay $25 and for each hotel $100",
+                                "Speeding fine $15"/*, "Go to Reading Railroad", "You have been elected Chairman of the Board. Pay each player $50",
                                 "Your building loan matures. Collect $150", "Advance to the nearest railroad",
                                 "Advance to Illinois Avenue"*/];
     return chances;
@@ -106,3 +106,32 @@ pub fn ch7(pl: &mut Player){
     println!("Moved back to {}", props().0[pl.boardposition as usize]);
 }
 
+pub fn ch8 (pl: &mut Player, j :&mut Vec<Jail>)->(){
+    j.push(jail_init(&pl)); 
+    pl.boardposition = 10;
+    pl.go_to_jail();
+}
+
+pub fn ch9 (pl : &mut Player, dat : &mut [Space;40]) -> (){
+    let mut housing = 0;
+    for ui in 0..pl.props.len(){
+        for w in 0..40{
+            if dat[w].name == pl.props[ui]{
+                    housing += dat[w].houses * 25;
+                    
+                if dat[w].hotel == true{
+                    housing += 100;
+                    break
+                }
+                break
+            }
+        }
+    }
+    println!("${} have been deducted from your wallet", housing);
+    pl.take_money(housing as i32);
+}
+
+pub fn ch10 (pl: &mut Player) -> (){
+    pl.take_money(15);
+    println!("New balance: {}", pl.money);
+}

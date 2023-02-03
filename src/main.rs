@@ -1,7 +1,8 @@
 use player::{Player, initialize_player};
 use rand::{Rng};
 use std::{env };
-use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match, rent_uti}, chances::{chances, ch1, ch0, ch2, ch3, ch4}};
+use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match, rent_uti}, 
+chances::{chances, ch1, ch0, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10}};
 mod data;
 mod chances;
 use std::io;
@@ -10,6 +11,7 @@ use std::time::{Instant};
 mod player;
 
 //really gotta add comments and clean up many parts of this
+//make get-out-of-jail-free cards work
 fn main() {
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char); 
     let start = Instant::now();
@@ -119,7 +121,7 @@ fn main() {
                         playe_r[i as usize].dice_move(dice.total());
                         println!("You landed on {}",spaces[playe_r[i as usize].boardposition as usize].name);
                         if spaces[playe_r[i as usize].boardposition as usize].name == "Chance".to_string(){
-                            let ch = rand::thread_rng().gen_range(2..3);
+                            let ch = rand::thread_rng().gen_range(1..11);
                             let chanc = chances();
                             let act = chanc[ch as usize - 1];
                             println!("You drew: {}", act);
@@ -131,6 +133,13 @@ fn main() {
                                     println!("Succesfully moved to {}", names[playe_r[i as usize].boardposition as usize])}
                                 5 => {ch4(&mut playe_r, i as usize, &mut spaces);
                                     println!("Succesfully moved to {}", names[playe_r[i as usize].boardposition as usize])}
+                                6 => {ch5(&mut playe_r[i as usize])},
+                                7 => {ch6(&mut playe_r[i as usize])},
+                                8 => {ch7(&mut playe_r[i as usize])},
+                                9 => {ch8(&mut playe_r[i as usize], &mut jails);
+                                        continue},
+                                10 => {ch9(&mut playe_r[i as usize], &mut spaces)}
+                                11 => ch10(&mut playe_r[i as usize]),
                                 _ => panic!("Chance problem")
 
                             }
