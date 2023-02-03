@@ -11,7 +11,8 @@ pub fn initialize_player(na : i8) -> Player{
         utilities : Vec::new(),
         props : Vec::new(),
         mortgaged: HashMap::new(),
-        in_jail : false
+        in_jail : false,
+        get_out_of_jail: 0
     };
     return p
 }
@@ -27,6 +28,7 @@ pub struct Player{
     pub props: Vec<String>,
     pub mortgaged: HashMap<String, i8>,
     pub in_jail: bool,
+    pub get_out_of_jail: i8
 }
 
 impl Player{

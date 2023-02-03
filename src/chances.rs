@@ -1,23 +1,23 @@
 use core::prelude;
 
-use crate::{player::Player, data::{Space, find_rent, PropTypes, SpaceType, rent_match}};
+use crate::{player::{Player, self}, data::{Space, find_rent, PropTypes, SpaceType, rent_match, props}};
 
-pub fn chances() -> [&'static str; 5]{
-    let chances : [&'static str; 5] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
-                                "Advance to nearest utility, if owned roll the dice and pay 10X what you roll" /*, "Bank pays you $10",
-                                "Get out of jail free card", "Go back 3 spaces", "Go to Jail", "For each house owned pay $25 and for each hotel $100",
+pub fn chances() -> [&'static str; 8]{
+    let chances : [&'static str; 8] = ["Advance to Boardwalk", "Advance to Go", "Advance to St. Charles Place", "Advance to the nearest railroad",
+                                "Advance to nearest utility, if owned roll the dice and pay 10X what you roll" , "Bank pays you $10",
+                                "Get out of jail free card", "Go back 3 spaces"/*, "Go to Jail", "For each house owned pay $25 and for each hotel $100",
                                 "Speeding fine $15", "Go to Reading Railroad", "You have been elected Chairman of the Board. Pay each player $50",
                                 "Your building loan matures. Collect $150", "Advance to the nearest railroad",
                                 "Advance to Illinois Avenue"*/];
     return chances;
     }
 
-pub fn ch0(mut pl : &mut Player) -> (){
+pub fn ch0(pl : &mut Player) -> (){
     if pl.boardposition == 39{   
     }
 }
 
-pub fn ch1(mut pl : &mut Player) -> (){
+pub fn ch1(pl : &mut Player) -> (){
     pl.dice_move(40 - pl.boardposition as i8);
     println!("$200 have been added to your wallet!")
 }
@@ -90,4 +90,19 @@ pub fn ch4 (lu:&mut Vec<Player>,pl: usize, li :&mut [Space; 40]) ->(){
         lu[(li[posi as usize].owner -1) as usize].add_money(idk);
     }
 }
-    
+ 
+pub fn ch5(pl: &mut Player){
+    pl.add_money(10);
+    println!("New balance: {}", pl.money);
+}
+
+pub fn ch6(pl : &mut Player){
+    pl.get_out_of_jail += 1;
+    println!("Number of get out of jail free cards: {}", pl.get_out_of_jail);
+}
+
+pub fn ch7(pl: &mut Player){
+    pl.dice_move(-3);
+    println!("Moved back to {}", props().0[pl.boardposition as usize]);
+}
+

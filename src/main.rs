@@ -1,7 +1,7 @@
 use player::{Player, initialize_player};
 use rand::{Rng};
 use std::{env };
-use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match}, chances::{chances, ch1, ch0, ch2, ch3, ch4}};
+use crate::{ data::{SpaceType, PropTypes, win_check, Jail, jail_init, find_rent, rent_match, rent_uti}, chances::{chances, ch1, ch0, ch2, ch3, ch4}};
 mod data;
 mod chances;
 use std::io;
@@ -11,6 +11,7 @@ mod player;
 
 //really gotta add comments and clean up many parts of this
 fn main() {
+    print!("{esc}[2J{esc}[1;1H", esc = 27 as char); 
     let start = Instant::now();
     let args: Vec<String> = env::args().collect();
     let player_count = &args[1];
@@ -93,6 +94,7 @@ fn main() {
             
         }
         let mut input = String::new();
+        print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
         io::stdin().read_line(&mut input).unwrap();
 
         //this block is used in house buying
@@ -189,10 +191,13 @@ fn main() {
                             }
                             
                         }
-                        else if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop{
+                        else if spaces[playe_r[i as usize].boardposition as usize].owned == true && spaces[playe_r[i as usize].boardposition as usize].owner != i as i8 + 1/* && spaces[playe_r[i as usize].boardposition as usize].kind ==  SpaceType::Prop */{
                         let opi = playe_r[i as usize].boardposition as i32;
                         let ren = rent_match(&mut playe_r, opi, &mut spaces);
-                        let x = find_rent( opi, &mut spaces, ren );
+                        let mut x = find_rent( opi, &mut spaces, ren );
+                        if spaces[playe_r[i as usize].boardposition as usize].kind == SpaceType::Utility{
+                            x = rent_uti(ren, (dice.d1 + dice.d2) as i32);
+                        }
                         println!("Owned by player {},\nYou have to pay {} $ in rent", spaces[playe_r[i as usize].boardposition as usize].owner, x);
                         playe_r[i as usize].take_money(x);
                         let y = playe_r[i as usize].boardposition;
@@ -289,12 +294,27 @@ fn main() {
                                 }
                             }
                         }
+                        for q in 0.. playe_r[i as usize].utilities.len(){
+                            for w in 0..40{
+                            if playe_r[i as usize].utilities[q] == names[w] && spaces[w].mortgage == false{
+                            mortgageable.push(names[w].to_string());
+                            }
+                        }
+                    }
+                        for q in 0.. playe_r[i as usize].railroads.len(){
+                            for w in 0..40{
+                            if playe_r[i as usize].railroads[q] == names[w] && spaces[w].mortgage == false{
+                            mortgageable.push(names[w].to_string());
+                            }
+                        }
+                    }
                         if mortgageable.len()==0{println!("You don't own any properties that can be put up for mortgage!");}
                         else{
                         println!("Type the name of the property you want to mortgage:\n{:?}", mortgageable);
                         io::stdin().read_line(&mut choice).unwrap();
                         if mortgageable.contains(&choice.trim().to_string()){
-                        for q in 0.. playe_r[i as usize].props.len(){
+                        if playe_r[i as usize].props.len() != 0
+                        {for q in 0.. playe_r[i as usize].props.len(){
                             if choice.trim() == playe_r[i as usize].props[q]{
                             for w in 0..40 {
                                 if choice.trim() == spaces[w].name{
@@ -315,7 +335,53 @@ fn main() {
                                 }
                             }
                         }
+                    }}
+                    if playe_r[i as usize].railroads.len() != 0
+                    {for q in 0.. playe_r[i as usize].railroads.len(){
+                        if choice.trim() == playe_r[i as usize].railroads[q]{
+                        for w in 0..40 {
+                            if choice.trim() == spaces[w].name{
+                                spaces[w].mortgage = true;
+                                if spaces[w].houses > 0{
+                                println!{"Removed all {} houses from the property.", spaces[w].houses};
+                                let back = spaces[w].houses as i32 * spaces[w].housep /2;
+                                println!("Added ${} to your wallet!", back);
+                                playe_r[i as usize].add_money(back);
+                                }
+                                spaces[w].houses = 0;
+                                playe_r[i as usize].railroads.remove(q);
+                                playe_r[i as usize].mortgaged.insert(names[w].to_string(), 0);
+                                //let added = playe_r[i as usize].mortgaged.len() - 1;
+                                println!("Succesfully took a mortgage on {} for ${}", names[w].to_string(),spaces[w].rent.mortgage);
+                                playe_r[i as usize ].add_money(spaces[w].rent.mortgage);
+                                
+                            }
+                        }
                     }
+                }}
+                if playe_r[i as usize].utilities.len() != 0
+                {for q in 0.. playe_r[i as usize].utilities.len(){
+                    if choice.trim() == playe_r[i as usize].utilities[q]{
+                    for w in 0..40 {
+                        if choice.trim() == spaces[w].name{
+                            spaces[w].mortgage = true;
+                            if spaces[w].houses > 0{
+                            println!{"Removed all {} houses from the property.", spaces[w].houses};
+                            let back = spaces[w].houses as i32 * spaces[w].housep /2;
+                            println!("Added ${} to your wallet!", back);
+                            playe_r[i as usize].add_money(back);
+                            }
+                            spaces[w].houses = 0;
+                            playe_r[i as usize].utilities.remove(q);
+                            playe_r[i as usize].mortgaged.insert(names[w].to_string(), 0);
+                            //let added = playe_r[i as usize].mortgaged.len() - 1;
+                            println!("Succesfully took a mortgage on {} for ${}", names[w].to_string(),spaces[w].rent.mortgage);
+                            playe_r[i as usize ].add_money(spaces[w].rent.mortgage);
+                            
+                        }
+                    }
+                }
+            }}
                     }
                     }
                     }
@@ -347,6 +413,16 @@ fn main() {
                                     match ans.trim(){
                                         "yes" => {
                                             playe_r[i as usize].take_money(pay);
+                                            for hig in 0..40{
+                                                if names[hig] == choice{
+                                                    match spaces[hig].kind{
+                                                        SpaceType::Prop => playe_r[i as usize].props.push(choice.to_string()),
+                                                        SpaceType::Railroad => playe_r[i as usize].railroads.push(choice.to_string()),
+                                                        SpaceType::Utility => playe_r[i as usize].utilities.push(choice.to_string()),
+                                                        _ => panic!("Problem in adding owned field back to owned list")
+                                                    }
+                                                }
+                                            }
                                             playe_r[i as usize].mortgaged.remove(&choice);
                                             spaces[ind].mortgage = false;
                                             println!("Succesfully lifted the mortgage off of {} for ${}", &choice, pay);
